@@ -131,17 +131,17 @@
            [parser-chan (make-channel)]
            [writer-chan (make-channel)]
            [functions (parse-request request)]
-           [parser-port (open-file (get-file-path file-name file-name ".json") "w")]
+           ;;[parser-port (open-file (get-file-path file-name file-name ".json") "w")]
            [writer-port (open-file (get-file-path file-name "result") "w")]
          )
            
           (spawn-fiber (lambda () (output-to-file writer-chan writer-port)))
 
-          (spawn-fiber (lambda () (atomese-parser parser-chan parser-port)))
+          ;;(spawn-fiber (lambda () (atomese-parser parser-chan parser-port)))
 
-           (for-each (lambda (fn) (apply (car fn) genes-list (list parser-chan writer-chan) (cdr fn))) functions)
+           (for-each (lambda (fn) (apply (car fn) genes-list (list writer-chan) (cdr fn))) functions)
 
-           (send-message 'eof (list writer-chan parser-chan))
+           (send-message 'eof (list writer-chan))
       )
     
     ) #:drain? #t)
